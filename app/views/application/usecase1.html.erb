@@ -1,0 +1,82 @@
+<div class="well">
+  <h1>Map View</h1>
+  <%= link_to 'List View', list_path, {'data-no-turbolink' => true} %>  
+</div>
+<div id="map_container" class="col-xs-12 pull-right" style="height: 200px">
+  <div id="map_canvas"></div>
+</div>
+<div id="infoWindowTemplate" style="display:none;">
+  <h3></h3>
+  <img id="infoImage" src="/assets/no_image.gif" alt="Image"/>
+  <div id="infoContent">
+    <p id="infoStats">
+      <span id="infoBedrooms"></span>
+      <span id="infoBathrooms"></span>
+      <span id="infoCarSpaces"></span>
+    </p>
+    <p id="infoAddress"></p>
+  </div>
+</div>
+<script defer async defer type="text/javascript">
+  function initMap() {
+    function buildInfoWindow(marker){
+      var $obj = $("#infoWindowTemplate").clone();
+      $obj.find("h3").html(marker.name);
+      $obj.removeAttr("style");
+      $obj.find("#infoImage").prop("src", marker.imageUrl);
+      if(marker.bedrooms > 0){
+        $obj.find("#infoBedrooms").html(marker.bedrooms + " Beds");
+      }
+      if(marker.bedrooms > 0){
+        $obj.find("#infoBathrooms").html(marker.bathrooms + " Baths");
+      }
+      if(marker.bedrooms > 0){
+        $obj.find("#infoCarSpaces").html(marker.car_spaces + " Cars");
+      }
+      $obj.find("#infoAddress").html(marker.address);
+      return $obj[0];
+    }
+    var map
+    function open_position(venue) {
+      var position = new google.maps.LatLng(venue.latitude, venue.longitude);
+      var map_canvas = $("#map_canvas");
+      map_canvas.height($("#map_container").height());
+      var mapProp = {
+        center: position,
+        zoom: 10,
+        mapTypeId:google.maps.MapTypeId.ROADMAP
+      }
+      if (map == undefined)
+        map = new google.maps.Map(map_canvas[0], mapProp)
+      var marker = new google.maps.Marker({
+        position: position,
+        animation:google.maps.Animation.DROP,
+        map: map,
+        name: venue.name,
+        address: venue.address,
+        car_spaces: (venue.car_spaces || 0),
+        bedrooms: (venue.bedrooms || 0 ),
+        bathrooms: (venue.bathrooms || 0),
+        // icon: '<%= asset_path 'house.gif' %>',
+        // imageUrl: '',
+      });
+      var infowindow = new google.maps.InfoWindow();
+      infowindow.setContent(buildInfoWindow(marker));
+      google.maps.event.addListener(marker, 'mouseover', function() {
+        infowindow.open(map, this);
+      });
+      google.maps.event.addListener(marker, 'mouseout', function() {
+         infowindow.close(map, this);
+      });
+      return marker.getPosition()
+    }
+    var bounds = new google.maps.LatLngBounds();
+    <% @venues.each do |venue| %>
+      var venue = <%= venue.to_json.html_safe %>;
+      if(venue.latitude && venue.longitude) {
+        bounds.extend(open_position(venue))
+      }
+    <% end %>
+    map.fitBounds(bounds);
+  }
+</script>

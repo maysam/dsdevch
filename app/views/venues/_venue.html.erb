@@ -1,0 +1,25 @@
+<tr>
+  <td>
+    <%= venue.name %>
+  </td>
+  <td>
+    <button type="button" class="btn btn-primary btn-sm" data-toggle="modal" data-target="#myModal<%= venue.id %>">
+      open map
+    </button>
+
+    <!-- Modal -->
+    <div class="modal fade" id="myModal<%= venue.id %>" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="myModalLabel"><%= venue.name %></h4>
+          </div>
+          <div class="modal-body">
+            <img src="https://maps.googleapis.com/maps/api/staticmap?center=<%= venue.longitude%>,<%= venue.latitude%>&zoom=13&size=200x200&maptype=roadmap&markers=size:mid%7Clabel:<%= venue.name %>%7C<%= venue.longitude%>,<%= venue.latitude%>&key=AIzaSyAISFPFF6X8bYHKVa0yaKQegdLGJVdbI-8" />
+          </div>
+        </div>
+      </div>
+    </div>
+  </td>
+</tr>

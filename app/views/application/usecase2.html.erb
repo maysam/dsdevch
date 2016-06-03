@@ -1,0 +1,7 @@
+<div class="well">
+  <h1>List View</h1>
+  <%= link_to 'Map View', map_path, {'data-no-turbolink' => true} %>
+</div>
+<table class="table">
+  <%= render @venues %>
+</table>
