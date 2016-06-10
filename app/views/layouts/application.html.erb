@@ -3,7 +3,6 @@
   <head>
     <title>Dsdevch</title>
     <%= stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track' => true %>
-    <script async defer src="//maps.googleapis.com/maps/api/js?key=AIzaSyAISFPFF6X8bYHKVa0yaKQegdLGJVdbI-8&callback=initMap"></script>
     <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
     <%= csrf_meta_tags %>
   </head>
@@ -11,5 +10,6 @@
     <div class="container">
       <%= yield %>  
     </div>
+    <script async defer src="//maps.googleapis.com/maps/api/js?key=AIzaSyAISFPFF6X8bYHKVa0yaKQegdLGJVdbI-8&callback=initMap"></script>
   </body>
 </html>
