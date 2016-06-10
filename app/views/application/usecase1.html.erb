@@ -1,6 +1,10 @@
 <div class="page-header">
-  <h1>Map View</h1>
-  <%= link_to 'List View', list_path, {'data-no-turbolink' => true} %>  
+  <h1>
+    Map View
+    <small>
+      <%= link_to 'List View', list_path, {'data-no-turbolink' => true} %>
+    </small>
+  </h1>
 </div>
 <center>
 <div class="well well-sm">
@@ -13,7 +17,7 @@ Playgrounds <span id="count" class="badge"></span>
 </div>
 <div id="infoWindowTemplate" style="display:none;">
   <h3></h3>
-  <img id="infoImage" src="/assets/no_image.gif" alt="Image"/>
+  <img id="infoImage" src="<%= asset_path 'no_image.gif' %>" alt="Image"/>
   <div id="infoContent">
     <p id="infoStats">
       <span id="infoBedrooms"></span>
