@@ -16,7 +16,7 @@
             <h4 class="modal-title" id="myModalLabel"><%= venue.name %></h4>
           </div>
           <div class="modal-body">
-            <img src="https://maps.googleapis.com/maps/api/staticmap?center=<%= venue.longitude%>,<%= venue.latitude%>&zoom=13&size=200x200&maptype=roadmap&markers=size:mid%7Clabel:<%= venue.name %>%7C<%= venue.longitude%>,<%= venue.latitude%>&key=AIzaSyAISFPFF6X8bYHKVa0yaKQegdLGJVdbI-8" />
+            <img data-src="https://maps.googleapis.com/maps/api/staticmap?center=<%= venue.latitude%>,<%= venue.longitude%>&zoom=16&size=300x300&maptype=roadmap&markers=size:mid%7Clabel:<%= venue.name %>%7C<%= venue.latitude%>,<%= venue.longitude%>&key=AIzaSyAISFPFF6X8bYHKVa0yaKQegdLGJVdbI-8" />
           </div>
         </div>
       </div>

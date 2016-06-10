@@ -84,9 +84,6 @@ Playgrounds <span id="count" class="badge"></span>
         animation:google.maps.Animation.DROP,
         map: map,
         name: venue.name,
-        // address: venue.address,
-        // icon: '<%= asset_path 'house.gif' %>',
-        // imageUrl: '',
       })
       markers.push(marker)
       var infowindow = new google.maps.InfoWindow();
@@ -99,7 +96,7 @@ Playgrounds <span id="count" class="badge"></span>
       })
     }
     <%
-      cache("#{@venues.size}-#{@venues.maximum(:updated_at)}") do  
+      cache("map-#{@venues.size}-#{@venues.maximum(:updated_at)}") do  
         @venues.each do |venue|
     %>
     mark_it_on_the_map(<%= venue.to_json.html_safe %>)
@@ -109,3 +106,4 @@ Playgrounds <span id="count" class="badge"></span>
     %>
   }
 </script>
+<script async defer src="//maps.googleapis.com/maps/api/js?key=AIzaSyAISFPFF6X8bYHKVa0yaKQegdLGJVdbI-8&callback=initMap"></script>

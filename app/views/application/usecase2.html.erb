@@ -1,11 +1,32 @@
-<div class="well">
-  <h1>List View</h1>
-  <%= link_to 'Map View', map_path, {'data-no-turbolink' => true} %>
+<div class="page-header">
+  <h1>
+    List View
+    <small>
+      <%= link_to 'Map View', map_path, {'data-no-turbolink' => true} %>
+    </small>
+  </h1>
 </div>
+<center>
+<div class="well well-sm">
+<input id="zoom" data-slider-id='zoomSlider' type="text" data-slider-min="0" data-slider-max="20" data-slider-step="1" data-slider-value="6"/>
+Playgrounds <span id="count" class="badge"></span>
+</div>
+</center>
 <table class="table">
+  <% cache("list-#{@venues.size}-#{@venues.maximum(:updated_at)}") do  %>
   <%= render @venues %>
+  <% end %>
 </table>
-<script defer async defer type="text/javascript">
-  function initMap() {
-  }
+
+<script type="text/javascript">
+  var zurich_location = {lat: 47.5021566, lng: 8.7242215}
+  var zoomSlider = $('#zoom').slider({
+    formatter: function(value) {
+      return 'Zoom Level: ' + value;
+    }
+  })
+  .on('slide', function () { 
+
+  })
+  .data('slider')
 </script>
