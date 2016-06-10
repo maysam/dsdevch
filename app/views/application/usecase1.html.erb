@@ -1,8 +1,14 @@
-<div class="well">
+<div class="page-header">
   <h1>Map View</h1>
   <%= link_to 'List View', list_path, {'data-no-turbolink' => true} %>  
 </div>
-<div id="map_container" class="col-xs-12 pull-right" style="height: 200px">
+<center>
+<div class="well well-sm">
+<input id="zoom" data-slider-id='zoomSlider' type="text" data-slider-min="0" data-slider-max="20" data-slider-step="1" data-slider-value="6"/>
+Playgrounds <span id="count" class="badge"></span>
+</div>
+</center>
+<div id="map_container" class="col-xs-12 pull-right" style="height: 300px">
   <div id="map_canvas"></div>
 </div>
 <div id="infoWindowTemplate" style="display:none;">
@@ -18,65 +24,81 @@
   </div>
 </div>
 <script defer async defer type="text/javascript">
+  var map
+  var markers = []
+
+  function count_markers() {
+    var _bounds = map.getBounds();
+    var count = 0
+    for(var i = 0; i < markers.length; i++)
+    {
+      // looping through my Markers Collection        
+      if(_bounds.contains(markers[i].position)) {
+        count++
+      }
+    }
+    $('#count').text(count)
+  }
+  var zoomSlider = $('#zoom').slider({
+    formatter: function(value) {
+      return 'Zoom Level: ' + value;
+    }
+  })
+  .on('slide', function () { 
+    map.setZoom(zoomSlider.getValue()) 
+    count_markers()
+  })
+  .data('slider')
+
   function initMap() {
     function buildInfoWindow(marker){
       var $obj = $("#infoWindowTemplate").clone();
       $obj.find("h3").html(marker.name);
       $obj.removeAttr("style");
       $obj.find("#infoImage").prop("src", marker.imageUrl);
-      if(marker.bedrooms > 0){
-        $obj.find("#infoBedrooms").html(marker.bedrooms + " Beds");
-      }
-      if(marker.bedrooms > 0){
-        $obj.find("#infoBathrooms").html(marker.bathrooms + " Baths");
-      }
-      if(marker.bedrooms > 0){
-        $obj.find("#infoCarSpaces").html(marker.car_spaces + " Cars");
-      }
-      $obj.find("#infoAddress").html(marker.address);
+      // $obj.find("#infoAddress").html(marker.address);
       return $obj[0];
     }
-    var map
+    var zurich_location = {lat: 47.5021566, lng: 8.7242215}
+    var zurich = new google.maps.LatLng(zurich_location.lat, zurich_location.lng)
+    var mapProp = {
+      center: zurich,
+      zoom: 14,
+      mapTypeId:google.maps.MapTypeId.ROADMAP
+    }
+    var map_canvas = $("#map_canvas");
+    map_canvas.height($("#map_container").height());
+    map = new google.maps.Map(map_canvas[0], mapProp)
+    google.maps.event.addListener(map, 'bounds_changed', function() {
+      zoomSlider.setValue(map.getZoom())
+      count_markers()
+    })
     function open_position(venue) {
-      var position = new google.maps.LatLng(venue.latitude, venue.longitude);
-      var map_canvas = $("#map_canvas");
-      map_canvas.height($("#map_container").height());
-      var mapProp = {
-        center: position,
-        zoom: 10,
-        mapTypeId:google.maps.MapTypeId.ROADMAP
-      }
-      if (map == undefined)
-        map = new google.maps.Map(map_canvas[0], mapProp)
+      var position = new google.maps.LatLng(venue.latitude, venue.longitude)
       var marker = new google.maps.Marker({
         position: position,
         animation:google.maps.Animation.DROP,
         map: map,
         name: venue.name,
-        address: venue.address,
-        car_spaces: (venue.car_spaces || 0),
-        bedrooms: (venue.bedrooms || 0 ),
-        bathrooms: (venue.bathrooms || 0),
+        // address: venue.address,
         // icon: '<%= asset_path 'house.gif' %>',
         // imageUrl: '',
-      });
+      })
+      markers.push(marker)
       var infowindow = new google.maps.InfoWindow();
       infowindow.setContent(buildInfoWindow(marker));
       google.maps.event.addListener(marker, 'mouseover', function() {
-        infowindow.open(map, this);
-      });
+        infowindow.open(map, this)
+      })
       google.maps.event.addListener(marker, 'mouseout', function() {
-        infowindow.close(map, this);
-      });
+        infowindow.close(map, this)
+      })
       return marker.getPosition()
     }
     var bounds = new google.maps.LatLngBounds();
     <% @venues.each do |venue| %>
-      var venue = <%= venue.to_json.html_safe %>;
-      if(venue.latitude && venue.longitude) {
-        bounds.extend(open_position(venue))
-      }
+      bounds.extend(open_position(<%= venue.to_json.html_safe %>))
     <% end %>
-    map.fitBounds(bounds);
+    // map.fitBounds(bounds);
   }
 </script>
