@@ -77,7 +77,7 @@ Playgrounds <span id="count" class="badge"></span>
       zoomSlider.setValue(map.getZoom())
       count_markers()
     })
-    function open_position(venue) {
+    function mark_it_on_the_map(venue) {
       var position = new google.maps.LatLng(venue.latitude, venue.longitude)
       var marker = new google.maps.Marker({
         position: position,
@@ -97,12 +97,15 @@ Playgrounds <span id="count" class="badge"></span>
       google.maps.event.addListener(marker, 'mouseout', function() {
         infowindow.close(map, this)
       })
-      return marker.getPosition()
     }
-    var bounds = new google.maps.LatLngBounds();
-    <% @venues.each do |venue| %>
-      bounds.extend(open_position(<%= venue.to_json.html_safe %>))
-    <% end %>
-    // map.fitBounds(bounds);
+    <%
+      cache("#{@venues.size}-#{@venues.maximum(:updated_at)}") do  
+        @venues.each do |venue|
+    %>
+    mark_it_on_the_map(<%= venue.to_json.html_safe %>)
+    <%
+        end
+      end
+    %>
   }
 </script>
