@@ -4,7 +4,7 @@ class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception
 
   def usecase1
-    @venues = Venue.where.not(latitude: nil, longitude: nil).select(:id, :name, :longitude, :latitude)
+    @venues = Venue.where.not(latitude: nil, longitude: nil).select(:id, :name, :street, :postcode, :city, :housenumber, :tourism, :longitude, :latitude)
   end
 
   def usecase2

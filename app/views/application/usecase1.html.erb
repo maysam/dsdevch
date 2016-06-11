@@ -17,14 +17,12 @@ Playgrounds <span id="count" class="badge"></span>
 </div>
 <div id="infoWindowTemplate" style="display:none;">
   <h3></h3>
-  <img id="infoImage" src="<%= asset_path 'no_image.gif' %>" alt="Image"/>
   <div id="infoContent">
-    <p id="infoStats">
-      <span id="infoBedrooms"></span>
-      <span id="infoBathrooms"></span>
-      <span id="infoCarSpaces"></span>
-    </p>
-    <p id="infoAddress"></p>
+    <span id="infoTourism"></span>
+    <span id="infoHousenumber"></span>
+    <span id="infoStreet"></span>
+    <span id="infoCity"></span>
+    <span id="infoPostcode"></span>
   </div>
 </div>
 <script type="text/javascript">
@@ -36,7 +34,7 @@ Playgrounds <span id="count" class="badge"></span>
     var count = 0
     for(var i = 0; i < markers.length; i++)
     {
-      // looping through my Markers Collection        
+      // looping through my Markers Collection
       if(_bounds.contains(markers[i].position)) {
         count++
       }
@@ -48,20 +46,23 @@ Playgrounds <span id="count" class="badge"></span>
       return 'Zoom Level: ' + value;
     }
   })
-  .on('slide', function () { 
-    map.setZoom(zoomSlider.getValue()) 
+  .on('change', function () {
+    map.setZoom(zoomSlider.getValue())
     count_markers()
   })
   .data('slider')
 
   function initMap() {
     function buildInfoWindow(marker){
-      var $obj = $("#infoWindowTemplate").clone();
-      $obj.find("h3").html(marker.name);
-      $obj.removeAttr("style");
-      $obj.find("#infoImage").prop("src", marker.imageUrl);
-      // $obj.find("#infoAddress").html(marker.address);
-      return $obj[0];
+      var $obj = $("#infoWindowTemplate").clone()
+      $obj.find("h3").html(marker.name)
+      $obj.removeAttr("style")
+      if (marker.street) $obj.find("#infoStreet").html(marker.street);
+      if (marker.postcode) $obj.find("#infoPostcode").html(marker.postcode);
+      if (marker.city) $obj.find("#infoCity").html(marker.city);
+      if (marker.housenumber) $obj.find("#infoHousenumber").html(marker.housenumber);
+      if (marker.tourism) $obj.find("#infoTourism").html(marker.tourism);
+      return $obj[0]
     }
     var zurich_location = {lat: 47.5021566, lng: 8.7242215}
     var zurich = new google.maps.LatLng(zurich_location.lat, zurich_location.lng)
@@ -84,6 +85,11 @@ Playgrounds <span id="count" class="badge"></span>
         animation:google.maps.Animation.DROP,
         map: map,
         name: venue.name,
+        street: venue.street,
+        postcode: venue.postcode,
+        city: venue.city,
+        housenumber: venue.housenumber,
+        tourism: venue.tourism,
       })
       markers.push(marker)
       var infowindow = new google.maps.InfoWindow();
@@ -96,7 +102,7 @@ Playgrounds <span id="count" class="badge"></span>
       })
     }
     <%
-      cache("map-#{@venues.size}-#{@venues.maximum(:updated_at)}") do  
+      cache("map-#{@venues.size}-#{@venues.maximum(:updated_at)}") do
         @venues.each do |venue|
     %>
     mark_it_on_the_map(<%= venue.to_json.html_safe %>)
