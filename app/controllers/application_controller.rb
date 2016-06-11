@@ -8,6 +8,6 @@ class ApplicationController < ActionController::Base
   end
 
   def usecase2
-    @venues = Venue.where.not(latitude: nil, longitude: nil).select(:id, :name, :longitude, :latitude)
+    @venues = Venue.where.not(latitude: nil, longitude: nil).select(:id, :name, :street, :postcode, :city, :housenumber, :tourism, :longitude, :latitude)
   end
 end
