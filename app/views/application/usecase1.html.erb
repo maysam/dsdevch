@@ -1,16 +1,8 @@
-<div class="page-header">
-  <h1>
-    Map View
-    <small>
-      <%= link_to 'List View', list_path, {'data-no-turbolink' => true} %>
-    </small>
-  </h1>
-</div>
 <center>
-<div class="well well-sm">
-<input id="zoom" data-slider-id='zoomSlider' type="text" data-slider-min="0" data-slider-max="20" data-slider-step="1" data-slider-value="6"/>
-Playgrounds <span id="count" class="badge"></span>
-</div>
+  <div class="well well-sm">
+    <input id="zoom" data-slider-id='zoomSlider' type="text" data-slider-min="0" data-slider-max="20" data-slider-step="1" data-slider-value="6"/>
+    Playgrounds <span id="count" class="badge"></span>
+  </div>
 </center>
 <div id="map_container" class="col-xs-12 pull-right" style="height: 300px">
   <div id="map_canvas"></div>
