@@ -28,6 +28,7 @@ Playgrounds <span id="count" class="badge"></span>
 <script type="text/javascript">
   var map
   var markers = []
+  var city_location = {lat: 47.5021566, lng: 8.7242215} // zurich defaults
 
   function count_markers() {
     var _bounds = map.getBounds();
@@ -53,6 +54,29 @@ Playgrounds <span id="count" class="badge"></span>
   .data('slider')
 
   function initMap() {
+
+    var city = new google.maps.LatLng(city_location.lat, city_location.lng)
+
+    var x = document.getElementById("demo");
+    function getLocation() {
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(showPosition)
+      } else {
+        console.log("Geolocation is not supported by this browser.")
+      }
+    }
+
+    function showPosition(position) {
+      city = new google.maps.LatLng(position.coords.latitude, position.coords.longitude)
+      if (map) {
+        map.setCenter(city)
+      } else {
+        console.log("Map is not loaded.");
+      }
+    }
+
+    getLocation()
+
     function buildInfoWindow(marker){
       var $obj = $("#infoWindowTemplate").clone()
       $obj.find("h3").html(marker.name)
@@ -64,11 +88,9 @@ Playgrounds <span id="count" class="badge"></span>
       if (marker.tourism) $obj.find("#infoTourism").html(marker.tourism);
       return $obj[0]
     }
-    var zurich_location = {lat: 47.5021566, lng: 8.7242215}
-    var zurich = new google.maps.LatLng(zurich_location.lat, zurich_location.lng)
     var mapProp = {
-      center: zurich,
-      zoom: 14,
+      center: city,
+      zoom: 15,
       mapTypeId:google.maps.MapTypeId.ROADMAP
     }
     var map_canvas = $("#map_canvas");
